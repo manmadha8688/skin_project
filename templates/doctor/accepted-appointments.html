@@ -1,0 +1,170 @@
+{% extends 'doctor/base.html' %} 
+{% block content %}  
+
+    <title>My Appointments</title>
+    
+    <h2>My Appointments</h2>
+
+    <div class="container">
+        {% if appointments %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Patient</th>
+                        <th>Date</th>
+                        <th>Disease</th>
+                        <th>Severity</th>
+                        <th>Confidence</th>
+                        <th>Additional information</th>
+                        <th>Contacts</th>      
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}     
+                <tr class="text-center align-middle">                     
+                    <td>                         
+                        {% if appointment.image %}                             
+                            <img src="{{ appointment.image.url }}" alt="Uploaded Image" class="custom-img-thumbnail">                         
+                        {% else %}                             
+                            <span class="text-muted">No Image</span>                         
+                        {% endif %}                     
+                    </td> 
+                    <td><stromg>Name :</stromg>{{appointment.patient_name}} <br>
+                        <stromg>Age :</stromg>{{appointment.patient_age}} <br>
+                        <stromg>Gender :</stromg>{{appointment.patient_gender}}<br>
+                           
+                    </td>                 
+                    <td>{{ appointment.date }}</td>                     
+                    <td class="fw-bold text-danger">{{ appointment.disease }}</td>    
+                        
+                    <td>                         
+                        {% if appointment.severity == "High" %}                             
+                            <span class="badge bg-danger px-3 py-2">{{ appointment.severity }}</span>                         
+                        {% elif appointment.severity == "Medium" %}                             
+                            <span class="badge bg-warning text-dark px-3 py-2">{{ appointment.severity }}</span>                         
+                        {% else %}                             
+                            <span class="badge bg-success px-3 py-2">{{ appointment.severity }}</span>                         
+                        {% endif %}                     
+                    </td>
+                        <td class="fw-bold">{{ appointment.confidence }}%</td>                     
+                        <td> <span class="badge  px-3 py-2">{{ appointment.addittional_information|default:"N/A" }}</span></td>   
+                        <td>
+                            {{appointment.patient_number}} <br><br>
+                            {{appointment.patient_email}}
+
+                        </td>                  
+                        <td><span class="badge bg-success">Approved</span></td>
+                        
+                        <td>  
+                            <form method="post" action="{% url 'cancell-patient-appointment' appointment.id %}" class="d-flex justify-content-center">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" id="status-{{ appointment.id }}">
+                                <button type="submit" class="btn btn-cancel" onclick="setStatus(event, {{ appointment.id }}, 'Cancelled')">
+                                    ❌ Cancel
+                                </button>
+                            </form>
+                        </td>
+                        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}     
+    <div class="not-found">
+        No appointments found.
+    </div>  
+        {% endif %}
+    </div>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 95%;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        h2 {
+            text-align: center;
+            color: #007bff;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #343a40;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .custom-img-thumbnail {
+            max-width: 80px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .bg-danger { background: #dc3545; color: white; }
+        .bg-warning { background: #ffc107; color: black; }
+        .bg-success { background: #28a745; color: white; }
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-cancel:hover {
+            background-color: #c82333;
+        }
+        .not-found {
+            text-align: center;
+            background-color: #d9edf7;
+            color: #31708f;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #bce8f1;
+            font-size: 16px;
+            font-weight: bold;
+            width: 50%;
+            margin: 20px auto;
+        }
+    </style>
+    
+<script>
+    function setStatus(event, appointmentId, status) {
+        event.preventDefault();
+        document.getElementById('status-' + appointmentId).value = status;
+        event.target.closest('form').submit();
+    }
+</script>
+
+</body>
+
+{%endblock%}

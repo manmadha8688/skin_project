@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnosis Result</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            background: linear-gradient(to right, #e3f2fd, #f1f8ff);
+        }
+
+        .result-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border: 2px solid #1565c0;
+        }
+
+        h2 {
+            color: #1565c0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Diagnosis Box */
+        .diagnosis-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #1565c0;
+        }
+
+        .diagnosis-box p {
+            font-size: 18px;
+            margin: 8px 0;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #d32f2f;
+        }
+
+        /* Image Preview */
+        #uploadedImage {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin: 15px auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .back-btn {
+            background: #1565c0;
+            color: white;
+        }
+
+        .back-btn:hover {
+            background: #0d47a1;
+        }
+
+        .appointment-btn {
+            background: #FF5722;
+            color: white;
+            font-size: 16px;
+            padding: 12px 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .appointment-btn:hover {
+            background: #490ed3;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .download-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .download-btn:hover {
+            background: #388e3c;
+        }
+
+        /* Button Container */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .side-by-side {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Condition Details */
+        .condition-details {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .condition-details h3 {
+            color: #1565c0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .condition-details p {
+            font-size: 16px;
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="result-container">
+        <h2>🔬 Diagnosis Result</h2>
+        <img id="uploadedImage" src="{{image}}" alt="Uploaded Image">
+        
+        <div class="diagnosis-box">
+            <p><strong>Condition:</strong> <span class="highlight">{{class}}</span></p>
+            <p><strong>Confidence:</strong>{{confidence}} %</p>
+            <p><strong>Severity Level:</strong> {{severity}}</p>
+        </div>
+
+        <div class="condition-details">
+            <h3>About {{class}}</h3>
+            <p><strong>Symptoms:</strong>{{symptoms}}</p>
+            <p><strong>Causes:</strong> {{causes}}</p>
+            <p><strong>Treatment Options:</strong>{{treatment}}</p>
+        </div>
+
+        <div class="side-by-side">
+            <a href="{% url 'desease_detecttion:desease_home' %}" class="btn back-btn">🔄 Upload Another Image</a>
+            <a href="{% url 'desease_detecttion:download-report' %}" class="btn download-btn">📄 Download Report</a>
+        </div>
+
+        <div class="button-container">
+            <a href="{% url 'appointments'%}" target="_blank" class="btn appointment-btn">📅 Book an Appointment</a>
+        </div>
+    </div>
+
+</body>
+</html>

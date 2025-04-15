@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image for Skin Disease Detection</title>
+    <style>
+        /* General Page Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url("{% static 'images/upload_back1.png' %}") no-repeat center center fixed;
+            background-size: cover;
+            position: relative;
+        }
+
+        /* Background Overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(6px);
+            z-index: 0;
+        }
+
+        .upload-container {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .upload-container:hover {
+            transform: scale(1.02);
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* File Upload Box */
+        .file-upload {
+            border: 2px dashed rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+            width: 100%;
+            font-weight: bold;
+        }
+
+        .file-upload:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        /* Image Preview */
+        #preview {
+            display: none;
+            width: 100px;
+            height: 100px;
+            margin: 15px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Upload Button */
+        .upload-btn {
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .upload-btn:hover {
+            background: linear-gradient(135deg, #1976d2, #0d47a1);
+            transform: scale(1.05);
+        }
+        /* Loader Overlay */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Loader Animation */
+.loader {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    
+}
+
+/* Keyframes for Loader Spin */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.upload-container .loader-overlay  p{
+    color: rgb(49, 240, 94);
+}
+    </style>
+</head>
+
+<body style="background-image: url( {% static 'images/upload_background.jpg' %}); background-size: cover;">
+
+    <div class="upload-container">
+        <h2>🩺 Upload Image for Skin Disease Detection</h2>
+        <br><br>
+        <form action="{% url 'desease_detecttion:result' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label class="file-upload" id="drop-area">
+                <input type="file" name="image" id="fileInput" accept="image/*" onchange="previewImage(event)">
+                Click here or drag an image to upload
+            </label>
+            <br><br>
+            <img id="preview" alt="Image Preview">
+             <br><br>{{error}}
+            <br><br>
+            <button onclick="showLoader()" class="upload-btn" type="submit">Analyze Image</button>
+        </form>
+        <div id="loader" class="loader-overlay" style="display: none;">
+            <div class="loader"></div>
+            <p >Processing and Analyzing your image, please wait...</p>
+        </div>
+        
+    </div>
+
+    <script>
+        function showLoader() {
+            document.getElementById("loader").style.display = "flex";
+        }
+        function previewImage(event) {
+            let reader = new FileReader();
+            reader.onload = function() {
+                let imgElement = document.getElementById("preview");
+                imgElement.src = reader.result;
+                imgElement.style.display = "block";
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Fix Drag & Drop Behavior
+        let dropArea = document.getElementById("drop-area");
+        let fileInput = document.getElementById("fileInput");
+
+        dropArea.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            dropArea.style.background = "rgba(255, 255, 255, 0.2)";
+        });
+
+        dropArea.addEventListener("dragleave", () => {
+            dropArea.style.background = "rgba(255, 255, 255, 0.1)";
+        });
+
+        dropArea.addEventListener("drop", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            dropArea.style.background = "rgba(255, 255, 255, 0.1)";
+
+            if (event.dataTransfer.files.length > 0) {
+                let file = event.dataTransfer.files[0];
+
+                // Assign the file to the input element
+                let dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+
+                // Trigger preview function
+                previewImage({ target: fileInput });
+            }
+        });
+
+        document.addEventListener("dragover", (event) => event.preventDefault());
+        document.addEventListener("drop", (event) => event.preventDefault());
+
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || performance.getEntriesByType("navigation")[0].type === "back_forward") {
+                location.reload();
+            }
+        });
+    </script>
+
+</body>
+</html>

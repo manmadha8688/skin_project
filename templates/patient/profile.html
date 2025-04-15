@@ -1,0 +1,177 @@
+
+{% extends 'home-page/base.html' %}
+{% block content %}
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f7f7f7;
+        }
+        .profile-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 6%;
+            margin-bottom: 10%;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #1e90ff;
+        }
+        .change-pic-btn {
+            margin-top: 10px;
+            background-color: #eee;
+            color: #333;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        input[readonly] {
+            background-color: #f0f0f0;
+            color: #555;
+            cursor: not-allowed;
+        }
+        .save-btn {
+            margin-top: 30px;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+        }
+        #profile_picture_input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-container">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="profile-header">
+            {% if patient.profile_picture %}
+    <img src="{{ patient.profile_picture.url }}" alt="Profile Picture" class="profile-pic" id="profileImagePreview">
+{% else %}
+    <img src="{% static 'images/about.jpg' %}" alt="Default Profile Picture" class="profile-pic" id="profileImagePreview">
+{% endif %}
+            <input type="file" name="profile_picture"  class="profile-pic"  id="profile_picture_input" accept="image/*" style="display: none;"><br>
+            <button type="button" onsubmit="window.location.href='{% url 'profile' %}'" class="save-btn" id="changeBtn" onclick="triggerImageUpload()">Change Profile</button>
+        </div>
+        
+        
+
+        <!-- Read-only fields -->
+        <label for="name">Name</label>
+        <input type="text" id="name" value="{{ patient.name }}" readonly>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" value="{{ patient.email }}" readonly>
+
+        <!-- Editable fields -->
+        <label for="phone_number">Phone Number</label>
+        <input type="text" name="phone_number" id="phone_number" value="{{ patient.phone_number }}">
+
+        <label for="date_of_birth">Date of Birth</label>
+        <input type="date" name="date_of_birth" id="date_of_birth" 
+        {% if patient.date_of_birth %}
+        value="{{ patient.date_of_birth|date:'Y-m-d' }}"
+        {% endif %}>
+
+        <label for="age">Age</label>
+        <input type="text" name="age" id="age" readonly value="{{ patient.age|default:'' }}">
+
+        <label for="gender">Gender</label>
+        <select name="gender" id="gender">
+            <option value="">-- Select --</option>
+            <option value="Male" {% if patient.gender == "Male" %}selected{% endif %}>Male</option>
+            <option value="Female" {% if patient.gender == "Female" %}selected{% endif %}>Female</option>
+            <option value="Other" {% if patient.gender == "Other" %}selected{% endif %}>Other</option>
+        </select>
+
+        <button type="submit" class="save-btn">Save Profile</button>
+    </form>
+</div>
+
+<script>
+    const changeBtn = document.getElementById('changeBtn');
+    const profileInput = document.getElementById('profile_picture_input');
+    const profilePreview = document.getElementById('profileImagePreview');
+
+    function triggerImageUpload() {
+        profileInput.click();
+    }
+
+    profileInput.addEventListener('change', function (event) {
+        // Change button to "Save Profile"
+        changeBtn.textContent = "Save Profile";
+        changeBtn.type = "submit";
+
+        // Show preview
+        if (event.target.files && event.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                profilePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    });
+    document.getElementById("date_of_birth").addEventListener("change", function () {
+        const dob = new Date(this.value);
+        const today = new Date();
+
+        if (!isNaN(dob.getTime())) {
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            document.getElementById("age").value = age;
+        } else {
+            document.getElementById("age").value = "";
+        }
+    });
+</script>
+
+
+</body>
+</html>
+
+
+
+{% endblock%}

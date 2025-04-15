@@ -1,0 +1,84 @@
+
+{% block context %}
+
+<div class="slider-container">
+    <div class="slider">
+        {% for review in reviews %}
+        <div class="slide">
+            <div class="review-card">
+                <div class="rating">
+                    {% for r in ""|rjust:review.ratting %}
+                        ⭐
+                    {% endfor %}
+                    
+                </div>
+                <br>
+              
+                <h4 ><i>{{ review.discription }}</i></h4>
+                <h6 style="margin-top: 30px;"> -- {{ review.by }}</h6>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <button class="prev" onclick="prevSlide()">&#10094;</button>
+    <button class="next" onclick="nextSlide()">&#10095;</button>
+</div>
+
+<style>
+    .slider-container {
+        position: relative;
+        width: 70%;
+        margin: auto;
+        overflow: hidden;
+    }
+    .slider {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+    }
+    .slide {
+        min-width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+    .profile-img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    .rating {
+        color: gold;
+        font-size: 1.2em;
+    }
+    .prev, .next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+    }
+    .prev { left: 0; }
+    .next { right: 0; }
+</style>
+
+<script>
+    let index = 0;
+    function showSlide(n) {
+        const slides = document.querySelectorAll('.slide');
+        if (n >= slides.length) index = 0;
+        if (n < 0) index = slides.length - 1;
+        document.querySelector('.slider').style.transform = `translateX(${-index * 100}%)`;
+    }
+
+    function nextSlide() { index++; showSlide(index); }
+    function prevSlide() { index--; showSlide(index); }
+
+    setInterval(nextSlide, 5000);
+</script>
+
+
+{% endblock %}

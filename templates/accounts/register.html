@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | AI Skin Check & Booking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: url("{% static 'images/register.webp' %}") no-repeat center center/cover;
+            position: relative;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Dark overlay for readability */
+        }
+        .register-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            text-align: center;
+            z-index: 1;
+        }
+        h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+        p {
+            margin-top: 10px;
+        }
+        a {
+            color: #28a745;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .login-btn {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
+            margin-top: 3%;
+        }
+        .login-btn:hover {
+            background: #218838;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="register-container">
+        <h2>Register</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="error">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <form action="{% url 'register' %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="text" name="name" placeholder="Your full name" required>
+            <input type="password" name="password1" placeholder="Password" required>
+            <input type="password" name="password2" placeholder="Confirm Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? </p>
+            <a href="{% url 'login' %}" class="login-btn">
+            🔑 Login
+        </a>
+        
+    </div>
+</body>
+</html>

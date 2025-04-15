@@ -1,0 +1,232 @@
+{% extends 'doctor/base.html' %}
+{% load static %}
+{% block content %}
+<div class="main-content">
+    <div class="header">
+        <h2>Dashboard</h2>
+        <input type="text" placeholder="Search...">
+    </div>
+    <div class="stats">
+        <div class="stat-box">
+            <img src="{% static 'images/total-patients.png' %}" class="images-top" alt="image" >
+            <p>Total Patients</p><p class="total"> 2000+</p> <br><p> Till today</p>
+        </div>
+        <div class="stat-box">
+            <img src="{% static 'images/today-patients.png' %}" class="images-top" alt="image" >
+           
+            <p>Today's Patients</p> <br><p class="total"> 68</p>
+        </div>
+        <div class="stat-box">
+            <img src="{% static 'images/tomorrow-appointments.png' %}" class="images-top"  alt="image" >
+           
+            <p>Tomorrow Appointments</p><br><p class="total">85</p>
+        </div>
+    </div>
+    <div class="content-sections">
+    
+        <div class="appointments">
+            <h2>Today's Appointments</h2>
+            <div class="table-container">
+                <table class="table">
+                    <tr>
+                        <th >Patient</th>
+                        <th>Name</th>
+                    </tr>
+                    <tr>
+                        <td><img alt="profile"></td>
+                        <td style="color: navy;">John Doe</td>
+                        <td>12:20</td>
+                    </tr>
+                    <tr>
+                        <td><img alt="profile"></td>
+                        <td>John Doe</td>
+                    </tr>
+                    
+                </table>
+            </div>
+        </div>
+        <div class="appointments">
+            <h2>Next Patient</h2><br>
+            <img src="C:/manmadha/django/projects1/mainproject/static/images/patient-profile.png" 
+                 class="images-top" alt="Patient Image">
+            <p><strong>Name:</strong> Alice Williams</p>
+            <p><strong>Age:</strong> 32</p>
+            <p><strong>Condition:</strong> Skin Allergy</p>
+            <p><strong>Appointment Time:</strong> 14:30</p>
+        </div>
+        <div class="appointments">
+        <div class="calendar">
+            <div class="calendar-header">
+                <span class="month">March - 2025</span>
+            </div>
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Sa</th>
+                        <th>Su</th>
+                        <th>Mo</th>
+                        <th>Tu</th>
+                        <th>We</th>
+                        <th>Th</th>
+                        <th>Fr</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td><td></td><td></td><td></td><td>1</td><td>2</td><td>3</td>
+                    </tr>
+                    <tr>
+                        <td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td>
+                    </tr>
+                    <tr>
+                        <td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td>
+                    </tr>
+                    <tr>
+                        <td>18</td><td>19</td><td>20</td><td class="today">21</td><td>22</td><td>23</td><td>24</td>
+                    </tr>
+                    <tr>
+                        <td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+        
+        
+    </div> 
+    
+</div>
+<style>
+    
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .stats {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .stat-box {
+        flex: 1;
+        background: rgb(185, 183, 237);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        margin-left: 10px;
+    }
+    .content-sections {
+        display: flex;
+        gap: 20px;
+        text-align: center;
+    }
+    .chart {
+        flex: 1;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    .patient-details {
+        margin-top: 20px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .images-top{
+        display: flex;
+        float: left;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        margin-left: 2%;
+    }
+    .stat-box p{
+        margin-left: 30%;
+    }
+    .total{
+        font-size: 26px;
+        margin-top: 2%;
+    }
+    .appointments {
+        display: flex;
+        width: 35%;
+        height: auto;
+        background: rgb(220, 219, 250);
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        flex-direction: column;
+        align-items: center;  /* Centers table horizontally */
+        justify-content: flex-start; /* Align content at the top */
+        max-height: 300px; /* Adjust height as needed */
+        overflow: hidden; /* Prevents overflow unless needed */
+    }
+    
+    /* Scrollable table container */
+    .table-container {
+        max-height: 200px; /* Adjust height to fit 4 rows */
+        overflow-y: auto;  /* Enables scrolling when content exceeds height */
+        width: 75%;
+        margin-top: 3%;
+        margin-left: 15%;
+    }
+    
+    /* Table styling */
+    .table {
+        width: 80%;
+        border-collapse: collapse;
+    }
+    
+    .table th, .table td {
+        padding: 8px;
+        text-align: center;
+    }
+    
+    
+    
+    /* Optional: Hide scrollbar in Webkit browsers */
+    .table-container::-webkit-scrollbar {
+        width: 5px;
+    }
+    .calendar {
+        width: 90%;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+    }
+    
+    .calendar-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: navy;
+    }
+    
+    .calendar-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .calendar-table th, .calendar-table td {
+        padding: 8px;
+        text-align: center;
+        font-size: 14px;
+    }
+    
+    .today {
+        font-weight: bold;
+        color: blue;
+    }
+    
+    
+</style>
+
+{% endblock %}

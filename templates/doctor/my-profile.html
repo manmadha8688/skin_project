@@ -1,0 +1,224 @@
+{% extends "doctor/base.html" %}
+{% load static %}
+{% block content %}
+
+{% for message in messages%}
+<h1 class="h1" >{{message}}</h1>
+{% endfor %}
+<div class="container1">
+   
+    <h2 class="title">Doctor Profile</h2>
+
+    <div class="profile-card">
+        <div class="profile-header">
+            <!-- Profile Image -->
+            {% if doctor.profile_image %}
+                <img src="{{ doctor.profile_image.url }}" alt="Profile Picture" class="profile" id="profile">
+            {% else %}
+                <img src="{% static 'images/doctor-demo.jpeg' %}" alt="Profile Picture" class="profile" id="profile">
+            {% endif %}
+        
+            <h3>{{ doctor.name|default:"Your Name" }}</h3>
+            <p>{{ doctor.specialization|default:"Your Specialization" }}</p>
+        
+            <!-- Hidden File Input -->
+            <input type="file" id="profileImageInput" accept="image/*" style="display: none;" onchange="previewProfileImage()">
+        
+            <!-- Buttons -->
+            <a href="#" onclick="triggerFileSelection()" class="edit-btn">Change Profile</a>
+            <button id="saveProfileBtn" onclick="uploadProfileImage()" class="save-image">Save</button>
+        
+            <!-- Form for Profile Update -->
+            <form id="profile-form" action="{% url 'update-profile' %}" method="POST" enctype="multipart/form-data" style="display: none;">
+                {% csrf_token %}
+                <input type="file" name="profile_image" id="hiddenProfileInput">
+            </form>
+        </div>
+        
+        
+        <form id="profile-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" name="name" value="{{ doctor.name|default:'' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="qualification">Qualification</label>
+                <input type="text" name="qualification" value="{{ doctor.qualification|default:'' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="specialization">Specialization</label>
+                <input type="text" name="specialization" value="{{ doctor.specialization|default:'' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="experience">Experience (Years)</label>
+                <input type="number" name="experience" value="{{ doctor.experience|default:'0' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="speaks">Speaks</label>
+                <input type="text" name="speaks" value="{{ doctor.speaks|default:'' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="availability">Availability (e.g., Mon-Fri 10 AM - 5 PM)</label>
+                <input type="text" name="availability" value="{{ doctor.availability|default:'' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="contact_number">Contact Number</label>
+                <input type="text" name="contact_number" value="{{ doctor.contact_number|default:'' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" value="{{ doctor.email|default:'' }}" required>
+            </div>
+            
+          
+
+            <div class="form-group">
+                <label for="about">About</label>
+                <textarea name="about" rows="4">{{ doctor.about|default:'' }}</textarea>
+            </div>
+
+            <button type="submit" class="save-btn">Save Details</button>
+        </form>
+    </div>
+    {% include 'doctor/address.html'%}
+
+            
+</div>
+
+<style>
+    .container1 {
+        max-width: 50%;
+        margin: 20px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .profile-card {
+        text-align: center;
+    }
+
+    .profile-header {
+        margin-bottom: 20px;
+    }
+
+    .profile {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #007bff;
+    }
+
+    .edit-btn{
+        display: inline-block;
+        padding: 5px 10px;
+        background: #3180ca;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+    }
+
+    .form-group input, 
+    .form-group textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-top: 5px;
+    }
+
+    
+    .save-image {
+        border: none;
+        display: none;
+        padding: 5px 10px;
+        background: #37da5d;
+        color: white;
+        width: 15%;
+        height: 5%;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    
+    .save-btn {
+        border: none;
+        padding: 5px 10px;
+        background: #37da5d;
+        color: white;
+        font-size: 18px;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 10px;
+        width: 80%;
+        height: 40px;
+    }
+    
+    .save-btn:hover {
+        background-color: #016717;
+    }
+    
+    .h1{
+        color: rgb(250, 29, 29);
+        text-align: center;
+    }
+</style>
+<script>
+    function triggerFileSelection() {
+        document.getElementById("profileImageInput").click(); // Trigger file input
+    }
+    
+    function previewProfileImage() {
+        let fileInput = document.getElementById("profileImageInput");
+        let profilePic = document.getElementById("profile");
+        let saveBtn = document.getElementById("saveProfileBtn");
+    
+        if (fileInput.files && fileInput.files[0]) {
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                profilePic.src = e.target.result;  // Show selected image preview
+                saveBtn.style.display = "inline-block";  // Show "Save" button
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+    
+    function uploadProfileImage() {
+        let fileInput = document.getElementById("profileImageInput");
+        let hiddenInput = document.getElementById("hiddenProfileInput");
+        let profileForm = document.getElementById("profile-form");
+    
+        if (fileInput.files.length > 0) {
+            hiddenInput.files = fileInput.files;  // Copy file to form input
+            profileForm.submit();  // Submit form
+        }
+    }
+    </script>
+    
+
+{% endblock %}

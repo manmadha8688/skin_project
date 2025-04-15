@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Location Selection</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        .address-con{margin-top: 5%;}
+        input, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: #007bff; color: white; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #map-container { display: none; margin-top: 10px; }
+        #map { height: 300px; border-radius: 8px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="address-con">
+    <div class="form-group">
+        <label for="clinic_address">Clinic Address</label>
+        <textarea name="address" id="fullAddress" rows="3" placeholder="Enter Full clinic address...">{{ doctor.address|default:'' }} </textarea>
+       
+    </div>
+    <button onclick="saveLocation()">Save Location</button>
+    
+    <div id="map-container">
+        <h3>Verify & pin the Location</h3>
+        <div id="map"></div>
+        
+    
+    <form id="location-form" method="POST" action="{% url 'save-location' %}">
+        {% csrf_token %}
+        <input type="hidden" name="latitude" id="lat-input">
+        <input type="hidden" name="longitude" id="lon-input">
+        <input type="hidden" name="address" id="address-input">
+    </form>
+    
+    <button onclick="saveFinalLocation()">Save Final Location</button>
+</div>
+    
+</div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    let map, marker;
+
+    function saveLocation() {
+        let address = document.getElementById("fullAddress").value.trim();
+        if (!address) {
+            alert("Please enter an address.");
+            return;
+        }
+
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    let lat = parseFloat(data[0].lat);
+                    let lon = parseFloat(data[0].lon);
+                    showMap(lat, lon);
+                } else {
+                    alert("Address not found. Please enter a valid address.");
+                }
+            })
+            .catch(() => alert("Error fetching location."));
+    }
+
+    function showMap(lat, lon) {
+        document.getElementById("map-container").style.display = "block";
+
+        if (!map) {
+            map = L.map('map').setView([lat, lon], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            marker = L.marker([lat, lon], { draggable: true }).addTo(map);
+        } else {
+            map.setView([lat, lon], 14);
+            marker.setLatLng([lat, lon]);
+        }
+
+        // Allow user to place a marker by clicking
+        map.on("click", function (e) {
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+            }
+        });
+
+        // Update coordinates when dragging marker
+        marker.on("dragend", function () {
+            let pos = marker.getLatLng();
+        });
+    }
+
+   
+    
+    function saveFinalLocation() {
+        let finalPos = marker.getLatLng();
+    
+        let address = document.getElementById("fullAddress").value.trim();
+
+        // Update hidden form fields
+        document.getElementById("lat-input").value = finalPos.lat.toFixed(6);
+        document.getElementById("lon-input").value = finalPos.lng.toFixed(6);
+        document.getElementById("address-input").value = address;
+        
+        document.getElementById("map-container").style.display = "none";
+
+        // Submit the form
+        document.getElementById("location-form").submit();
+    }
+
+
+</script>
+
+</body>
+</html>

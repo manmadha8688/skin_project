@@ -1,0 +1,88 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Assessment Guide</title>
+    <style>
+        /* Main container for How to Use section */
+        .how_to_use {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 90%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Individual Step */
+        .how_to_use .step {
+            text-align: center;
+            width: 22%;
+        }
+
+        /* Step Images */
+        .how_to_use .step img {
+            width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        /* Step Headings */
+        .how_to_use .step h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        /* Step Description */
+        .how_to_use .step p {
+            font-size: 14px;
+            color: #666;
+        }
+
+       
+    </style>
+</head>
+<body>
+
+    <div class="how_to_use">
+        <!-- Step 1: Take a Photo -->
+        <div class="step">
+            <img src="{% static 'images/how_to_use1.png' %}" alt="Take Photo"> <!-- Replace with actual image -->
+            <h3>Take a photo*</h3>
+            <p>Keep zoomed at the closest distance (less than 10 cm), keep in focus, and center only the skin mark.</p>
+            
+        </div>
+
+        <!-- Step 2: Identify and Send -->
+        <div class="step">
+            <img  src="{% static 'images/how_to_use2.png' %}" alt="Send Photo"> <!-- Replace with actual image -->
+            <br><h3>Identify and send</h3>
+            <p>Send your photo to the AI. The system will analyze it and send you a risk assessment.</p>
+            
+        </div>
+
+        <!-- Step 3: Receive Risk Assessment -->
+        <div class="step">
+            <img src="{% static 'images/how_to_use3.png' %}" alt="Receive Result"> <!-- Replace with actual image -->
+            <h3>Receive your result</h3>
+            <p>Get the result within 60 seconds and related advice on the next steps to take.</p>
+            
+        </div>
+
+        <!-- Step 4: Book Appointment -->
+        <div class="step">
+            <img width="50%" height="50%" src="{% static 'images/how_to_use4.jpg' %}" alt="Book Appointment"> <!-- Replace with actual image -->
+            <h3>Book an appointment</h3>
+            <p>If needed, book an appointment with a dermatologist for further consultation.</p>
+            
+        </div>
+    </div>
+
+</body>
+</html>

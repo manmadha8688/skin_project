@@ -1,0 +1,212 @@
+{% extends 'home-page/base.html'%}
+{%load static %}
+{% block content %}
+<div class="home" style="height: 500px;">
+
+    <!-- Home Slider -->
+    <div class="home_slider_container">
+    <div class="owl-carousel owl-theme home_slider">
+            
+            
+         <!-- Slide -->
+            <div class="owl-item">
+            <div class="background_image" style="background-image:url({%  static 'images/photo_3.jpg' %});margin-top: 30px;"></div>
+            <div class="home_slider_content_container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="home_slider_content">
+                                <div  style="margin-left:-50px;margin-top:10px;color:#2b2828;"><h2> Say No To Skin Diseases!</h2>
+                                
+                                    <br>
+                                    <h4 >Check your skin through online and get  results within seconds.</h4>
+                                
+                                </div>
+                                <div style="margin-top:70px;">
+                                   <button class="action_button" style="width:250px; margin-left: -20px;"  onclick="window.location.href='{% url 'desease_detecttion:desease_home'%}'" >
+                                    <h4 style="color: white;">Check your skin Now</h4>
+                                    </button>
+                                </div>
+                                <div>
+                                         <h5 style="margin-top:50px;margin-left: -50px;color:white;">
+                                       * The result is not a diagnosis. To obtain an accurate diagnosis and a recommendation for treatment - consult anyone of our doctors</h5>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
+        
+            <!-- Slide -->
+
+            <div class="owl-item">
+            <div class="background_image" style="background-image:url({%  static 'images/photo_3.jpg' %});margin-top: 30px;"></div>
+            <div class="home_slider_content_container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="home_slider_content">
+                                <div  style="margin-left:-50px;margin-top:10px;color:#2b2828;"><h2> Say No To Skin Diseases!</h2>
+                                
+                                    <br>
+                                    <h4 >Check your skin through online and get  results within seconds.</h4>
+                                
+                                </div>
+                                <div style="margin-top:70px;">
+                                   <button class="action_button" style="width:250px; margin-left: -20px;"  onclick="window.location.href='{% url 'desease_detecttion:desease_home'%}'" >
+                                    <h4 style="color: white;">Check your skin Now</h4>
+                                    </button>
+                                </div>
+                                <div>
+                                         <h5 style="margin-top:30px;margin-left: -50px;color:#222121;">
+                                       * The result is not a diagnosis. To obtain an accurate diagnosis and a recommendation for treatment - consult anyone of our doctors</h5>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
+        
+            <!-- Slide -->
+         
+           <div class="owl-item">
+            <div class="background_image" style="background-image:url({%  static 'images/photo_3.jpg' %});margin-top: 30px;"></div>
+            <div class="home_slider_content_container">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div class="home_slider_content">
+                                <div  style="margin-left:-50px;margin-top:10px;color:#2b2828;"><h2> Say No To Skin Diseases!</h2>
+                                
+                                    <br>
+                                    <h4 >Check your skin through online and get  results within seconds.</h4>
+                                
+                                </div>
+                                <div style="margin-top:70px;">
+                                   <button class="action_button" style="width:250px; margin-left: -20px;"  onclick="window.location.href='{% url 'desease_detecttion:desease_home'%}'" >
+                                    <h4 style="color: white;">Check your skin Now</h4>
+                                    </button>
+                                </div>
+                                <div>
+                                         <h5 style="margin-top:60px;margin-left: -50px;color:rgb(255, 6, 6);">
+                                       * The result is not a diagnosis. To obtain an accurate diagnosis and a recommendation for treatment - consult anyone of our doctors</h5>
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
+         
+         
+         
+        
+
+    
+    </div>
+    </div>
+</div>
+
+<!-- skin diseases defnition -->
+
+
+<br><div class="defnition_container">
+    <div class="heading">
+        <h3>What are Skin Diseases?</h3>
+    </div>
+    
+    <div class="media">
+        <div class="column">
+            <img src="{% static 'images/diseases_image_3.jpg' %}" alt="Skin Disease Image">
+        </div>
+        <div class="column text-content">
+            <p class="m">
+                Skin diseases refer to various conditions affecting the skin, hair, and nails, often causing rashes,
+                 inflammation, itchiness, or other visible changes. These conditions can result from genetic factors, infections,
+                  allergies, or environmental exposures. Treatment options may include medications, topical creams, or lifestyle adjustments. <br>
+                  Skin diseases can range from mild irritations to chronic conditions, impacting both appearance and health. Early diagnosis and proper 
+                  care are key to effective treatment and management.
+            </p>
+            
+        </div>
+    </div>
+</div>
+<br>
+<div id="booking" class="booking"></div>
+<center>
+<h1>Worried about your skin condition? </h1>
+<p>Don’t Waste Time, Get Expert Skin Care Now!<br>
+Consult with our expert dermatologists and book an appointment easily.<br>
+Don't wait for hours—schedule your consultation and get the care you need.</p>
+<br>
+<a href="{% url 'appointments'%}" target="_blank" class="appointment-btn">📅 Book an Appointment</a>
+
+</center>
+<div class="why-us">
+<div class="why-item">
+    <img src="stethoscope-icon.png" alt="Happy Patients">
+    <h3>500,000+</h3>
+    <p>Happy Patients</p>
+</div>
+
+<div class="why-item">
+    <img src="experience-icon.png" alt="Experience">
+    <h3>25+ Years</h3>
+    <p>of Experience</p>
+</div>
+
+<div class="why-item">
+    <img src="expert-icon.png" alt="Expert Doctors">
+    <h3>Top Experts</h3>
+    <p>Specialized Dermatologists</p>
+</div>
+</div>
+
+
+
+
+<div class="center" style="margin-top: 70px;">
+<div style="margin-left: 50px;">
+    <div style="color: rgb(88, 88, 214);"><h3>Early detection saves life!</h3></div>
+    <br><p>Small changes on skin can mean big problems<p>
+    <p>This can reveal what your skin needs to stay healthy.</p>
+    <button class="action_button" onclick="window.location.href='{% url 'desease_detecttion:desease_home'%}'" > <h5 style="color: white;">ACT NOW</h5></button>
+  </div>
+</div>
+<!-- Features -->
+<div id="features"></div>
+{% include 'home-page/features.html'%}
+<br><br><br>
+
+<!-- reviews section-->
+
+<div class="defnition_container">
+<div  class="heading" id="reviews"><h3>Testimonial given by Users </h3>
+</div>
+</div>
+<br><br><br><br>
+{% include 'reviews/reviews.html'%}
+
+
+<br><br>
+{% include 'reviews/add_review.html'%}
+
+<!-- Instruction to use  -->
+
+
+<br><br>
+
+<div class="defnition_container">
+<div class="heading" id="howtouse"><h3>How to detect skin diseases?</h3></div>
+</div>
+<div id="how"></div>
+{% include 'home-page/how to use.html'%}
+
+<br><br> 
+
+{% endblock %}

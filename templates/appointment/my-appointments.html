@@ -1,0 +1,177 @@
+{% extends 'home-page/base.html' %}
+{% block content %}
+
+<div class="container " >  
+    <h2 class="text-center mb-4">My Appointments</h2>
+
+    {% if appointments %}
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="table-dark">
+                <tr class="text-center">
+                    <th>Uploaded Image</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Disease</th>
+                    <th>Severity</th>
+                    <th>Confidence</th>
+                    <th>Additional <br>information</th>
+                    <th>Address</th>
+                    <th>Doctor Contact</th>
+                    <th>Status</th>
+                    <th>Patient Details</th>
+                    <th>Action</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                <tr class="text-center align-middle">
+                    <td>
+                        {% if appointment.image %}
+                            <img src="{{ appointment.image.url }}" alt="Uploaded Image" class="img-thumbnail shadow-sm" style="max-width: 150px; border-radius: 8px;">
+                        {% else %}
+                            <span class="text-muted">No Image</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ appointment.doctor.name }}</td>
+                    <td>{{ appointment.date }}</td>
+                    <td>{{ appointment.disease }}</td>
+                    <td>
+                        {% if appointment.severity == "Severe" %}
+                            <span class="badge bg-danger">{{ appointment.severity }}</span>
+                        {% elif appointment.severity == "Moderate" %}
+                            <span class="badge bg-warning text-dark">{{ appointment.severity }}</span>
+                        {% else %}
+                            <span class="badge bg-success">{{ appointment.severity }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ appointment.confidence }}%</td>
+                    <td>{{ appointment.addittional_information }}</td>
+                    <td>{{ appointment.doctor.address }} <br><br>
+                        {% if appointment.status in "Pending,Approved" %}
+                        <button class="direction-button" onclick="openGoogleMaps({{appointment.doctor.latitude}},{{appointment.doctor.longitude}})">Get Directions</button>
+                        {% endif%}
+
+                              
+                    </td>
+                    <td>{{ appointment.doctor.email }}  <br>{{ appointment.doctor.contact_number }}</td>
+                    </td>
+                    
+                    <td>
+                        {% if appointment.status == "Pending" %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif appointment.status == "Approved" %}
+                            <span class="badge bg-success">Approved</span>
+                        {% elif appointment.status == "Cancelled" %}
+                            <span class="badge bg-danger">Cancelled</span>
+                        {% else %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% endif %}
+                    </td>
+                    <td style="width: 100%;">
+                        <stromg>Name :</stromg>{{appointment.patient_name}} <br>
+                        <stromg>Age :</stromg>{{appointment.patient_age}} <br>
+                        <stromg>Gender :</stromg>{{appointment.patient_gender}}<br>
+                        <stromg>Phone :</stromg> {{appointment.patient_number}} <br>
+                        <stromg>Email :</stromg> {{appointment.patient_email}} 
+                    </td>
+                    <td>
+                        {% if appointment.status in "Pending,Approved" %}
+                        <form method="post" action="{% url 'update-doctor-appointment-status' appointment.id %}" class="d-flex justify-content-center">
+                            {% csrf_token %}
+                            <input type="hidden" name="status" id="status-{{ appointment.id }}">
+                            <button type="submit" class="btn-cancel" onclick="setStatus(event, {{ appointment.id }}, 'Cancelled')">
+                                Cancel
+                            </button>
+                        </form>
+                        {% endif %}
+                    </td>
+                    
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="not-found" role="alert">
+        No appointments found.
+    </div>
+    {% endif %}
+</div>
+<style>
+    .direction-button {
+        background-color: #1e90ff; /* DodgerBlue */
+        color: white;
+        border: none;
+        padding: 3px 5px;
+        font-size: 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .direction-button:hover {
+        background-color: #0d6efd; /* Slightly darker blue */
+        transform: translateY(-2px);
+    }
+
+    .direction-button:active {
+        transform: translateY(1px);
+        background-color: #0a58ca;
+    }
+    .container{
+        margin-top: 6%;
+        margin-bottom:25%;
+    }
+    .btn-cancel {
+        background-color: rgb(193, 6, 6); /* DodgerBlue */
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        font-size: 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .btn-cancel:hover {
+        background-color: #55020b;
+    }
+    .not-found {
+        background-color: #ffebcc;
+        color: #b36b00;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #ffcc80;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        width: 100%;
+        max-width: 400px;
+        margin: 20px auto;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    }
+
+</style>
+   
+<script>
+    function setStatus(event, appointmentId, status) {
+        event.preventDefault();
+        document.getElementById('status-' + appointmentId).value = status;
+        event.target.closest('form').submit();
+    }
+
+        function openGoogleMaps(latitude,longitude) {
+            // Default destination coordinates (e.g., a clinic, store, etc.)
+            const destinationLat =latitude;  // Replace with your latitude
+            const destinationLng = longitude; // Replace with your longitude
+
+            // Open Google Maps with directions from current location to destination
+            const url = `https://www.google.com/maps/dir/?api=1&destination=${destinationLat},${destinationLng}&travelmode=driving`;
+            window.open(url, '_blank');
+        }
+    </script>
+{% endblock %}

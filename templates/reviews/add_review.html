@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Popup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        /* Button to open popup */
+        .open-popup-btn {
+            display: block;
+            margin: 50px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .open-popup-btn:hover {
+            background-color: #02123f;
+        }
+
+        /* Popup overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        /* Popup box */
+        .popup-box {
+            background: #e0e7ff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 350px;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+        
+        /* Show popup */
+        .popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .popup-overlay.show .popup-box {
+            transform: scale(1);
+        }
+
+        /* Close button */
+        .popup-box .close-btn {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 50%;
+        }
+
+        /* Stars */
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        
+        .star {
+            font-size: 40px;
+            color: #ccc;
+            transition: color 0.3s;
+        }
+        .star:hover,
+        .star.active {
+            color: gold;
+        }
+        
+        /* Feedback textarea */
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+
+        /* Submit button */
+        .popup-box .submit {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .popup-box .submit:hover {
+            background-color: #02123f;
+        }
+        
+    </style>
+</head>
+<body>
+    <button class="open-popup-btn" onclick="openPopup()">Share my feedback</button>
+    
+    <div class="popup-overlay" id="popup">
+        <div class="popup-box">
+            <form id="feedbackForm" method="POST" action="{% url 'review:add_review' %}">
+                {% csrf_token %}
+                <button type="button" class="close-btn" onclick="closePopup()">×</button>
+                <h4>We value your opinion.</h4>
+                <p>How would you rate your overall experience?</p>
+                <div class="stars" id="stars">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+                <input type="hidden" name="rating" id="ratingInput">
+                <p>Kindly take a moment to tell us what you think.</p>
+                <textarea id="feedback" name="feedback" placeholder="Enter your feedback..." required></textarea>
+                <button class="submit" type="submit">Share my feedback</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let selectedRating = 0;
+        const popup = document.getElementById("popup");
+        const stars = document.querySelectorAll(".star");
+        const ratingInput = document.getElementById("ratingInput");
+
+        function openPopup() {
+            popup.classList.add("show");
+        }
+
+        function closePopup() {
+            popup.classList.remove("show");
+            resetForm();
+        }
+
+        // Close popup on "Escape" key
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                closePopup();
+            }
+        });
+
+        // Star rating selection with hover effect
+        stars.forEach(star => {
+            star.addEventListener("click", function() {
+                selectedRating = this.getAttribute("data-value");
+                ratingInput.value = selectedRating; // Store selected rating in hidden input field
+                stars.forEach(s => s.classList.remove("active"));
+                for (let i = 0; i < selectedRating; i++) {
+                    stars[i].classList.add("active");
+                }
+            });
+        });
+
+        function resetForm() {
+            document.getElementById("feedback").value = "";
+            selectedRating = 0;
+            ratingInput.value = "";
+            stars.forEach(s => s.classList.remove("active"));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,596 @@
+{% extends 'home-page/base.html'%}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Dermatologist Appointment</title>
+    
+
+    <style>
+        .sidebar {
+            margin-top: 7%;
+            width: 15%;
+            background: #0077b6;
+            color: white;
+            padding: 20px;
+            height: 100vh;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid white;
+            padding-bottom: 5px;
+        }
+
+        .sidebar label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .sidebar select {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            background: #eef2f7;
+        }
+
+        /* Main Content */
+        .appointment-container { 
+            margin-left: 20%;
+            margin-bottom: 30%;
+            margin-top: 5%;
+            padding: 20px;
+            
+        }
+
+        h1 {
+            color: #023e8a;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .doctor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .doctor-card {
+            background: rgb(206, 221, 248);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .doctor-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .doctor-card img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            margin-left:30px;
+            border: 3px solid #009cde;
+        }
+
+        .doctor-info {
+            flex-grow: 1;
+            margin-left: 10%;
+        }
+
+        .doctor-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #4c0cef, #0077b6);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-btn {
+            background: #555;
+        }
+
+        .profile-btn:hover {
+            background: #dcdbdb;
+        }
+        .doctor-info p{
+            margin-top: -3%;
+        }
+        .doctor-info h3{
+            margin-bottom: 4%;
+        }
+        /* Modal Overlay */
+.custom-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+/* Ensure Body Scrolls when Modal is Open */
+body.modal-open {
+    overflow: hidden;
+}
+
+
+
+        /* Modal Overlay */
+        .custom-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Modal Box */
+        .custom-modal {
+            width: 40%;
+            background: rgb(231, 230, 230);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            margin-top:45%;
+        }
+
+        .custom-modal-header {
+            background: #0da2f2;
+            color: rgb(223, 223, 223);
+            padding: 5px;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .custom-modal-header h2{
+            text-align: center;
+            font-size: 22px;
+        }
+
+        
+        .custom-input, .custom-textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 7px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .custom-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 25px;
+            color: rgb(11, 3, 3);
+            cursor: pointer;
+            
+
+        }
+
+        .close-btn:hover {
+            color: #ffcc00;
+            background: black;
+        }
+
+
+        .primary-btn {
+            background: #5043fe;
+            color: white;
+            border: none;
+        }
+        .primary-btn:hover{
+            background: rgb(2, 2, 224);
+        }
+        .secondary-btn {
+            background: #c7c7c7;
+            color: rgb(10, 10, 10);
+            border: none;
+            margin-top: 3%;
+        }
+        .secondary-btn:hover{
+            background:rgba(55, 55, 55, 0.558);
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .custom-modal {
+                width: 90%;
+            }
+            .sidebar {
+                width: 100%;
+                position: relative;
+            }
+            .appointment-container {
+                margin-left: 0;
+            }
+        }
+        .not-found {
+            background-color: #ffebcc;
+            color: #b36b00;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ffcc80;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+        .near-doctors-btn {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 5%;
+        }
+        
+        .near-doctors-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.03);
+        }
+        
+        .near-doctors-btn:active {
+            background-color: #3e8e41;
+            transform: scale(0.98);
+        }
+        .near-doctors-btn {
+            padding: 10px 20px;
+            background-color: #1e90ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+ 
+
+        .location-btn {
+          padding: 10px 20px;
+          background-color: #1e90ff;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-size: 16px;
+      }
+      .location-modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 9999; /* HIGH z-index */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+    margin-left: 20%;
+    margin-bottom: 30%;
+    margin-top: 5%;
+    padding: 20px;
+
+}
+
+.location-modal {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    z-index: 10000; /* ALSO HIGHER than overlay just in case */
+   
+}
+
+      
+      .location-modal-header {
+          background-color: #1e90ff;
+          color: white;
+          padding: 12px 16px;
+          font-size: 18px;
+          font-weight: bold;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+      }
+      
+      .location-close-btn {
+          background: none;
+          border: none;
+          font-size: 24px;
+          color: white;
+          cursor: pointer;
+      }
+      
+      #map {
+          flex: 1;
+          width: 100%;
+          height: 100%;
+          z-index: 10001;
+      }
+      .hidden {
+        display: none !important;
+    }
+    
+        
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Filter Dermatologists</h2>
+        
+        <form method="POST" id="filter-form">
+            {% csrf_token %}
+            <label for="experience">Experience:</label>
+            <select name="experience" id="experience" onchange="document.getElementById('filter-form').submit();">
+                <option value="" disabled selected>Select Experience</option>
+                <option value="" {% if request.POST.experience == "" %}selected{% endif %}>All</option>
+                <option value="1" {% if request.POST.experience == "1" %}selected{% endif %}>1+ Years</option>
+                <option value="2" {% if request.POST.experience == "2" %}selected{% endif %}>2+ Years</option>
+                <option value="3" {% if request.POST.experience == "3" %}selected{% endif %}>3+ Years</option>
+                <option value="5" {% if request.POST.experience == "5" %}selected{% endif %}>5+ Years</option>
+            </select>
+
+            <label for="language">Language:</label>
+            <select name="language" id="language" onchange="document.getElementById('filter-form').submit();">
+                <option value="" {% if request.POST.language == "" %}selected{% endif %}>Any</option>
+                <option value="Telugu" {% if request.POST.language == "Telugu" %}selected{% endif %}>Telugu</option>
+                <option value="English" {% if request.POST.language == "English" %}selected{% endif %}>English</option>
+                <option value="Hindi" {% if request.POST.language == "Hindi" %}selected{% endif %}>Hindi</option>
+                <option value="Gujarati" {% if request.POST.language == "Gujarati" %}selected{% endif %}>Gujarati</option>
+            </select>
+
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+
+    <!-- Button to Get Near Doctors -->
+    <label for="location">Location :</label>
+    <button type="button" onclick="getUserLocation()" class="near-doctors-btn">
+        Get Near Doctors
+    </button>
+    
+   
+    
+            
+</form>
+        
+        
+    </div>
+
+    <div class="appointment-container"> 
+        <h1>Book a Dermatologist Appointment</h1>
+        <p>Find experienced dermatologists and book your online consultation instantly.</p>
+        
+        {% if doctors%}
+        <h5>Total {{total}} doctors found</h5>
+        <div class="doctor-list">
+            {% for doctor in doctors %}
+            <div class="doctor-card">
+                <img src="{{ doctor.profile_image.url }}" alt="Profile Picture" onerror="this.src='{% static 'images/doctor-demo.jpeg' %}';">
+                <div class="doctor-info">
+                    <h3>{{ doctor.name }}</h3>
+                    <p>{{ doctor.qualification }} {{ doctor.specialization }} | {{ doctor.experience }}+ years</p>
+                    <p>Speaks: {{ doctor.speaks }}</p>
+                    <p><strong>Available:</strong> {{ doctor.availability }}</p>
+                    <p><strong>Address :</strong> {{doctor.address}}</p>
+                    <p><strong>Contact:</strong> {{ doctor.contact_number }}, {{ doctor.email }}</p>
+                </div>
+                <div class="doctor-actions">
+                    <button class="btn" onclick="openBookingModal('{{ doctor.id }}')">Book Appointment</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}     
+    <div class="not-found">
+        No Doctors found.
+    </div>  
+        {% endif %}
+    </div>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="custom-modal-overlay">
+        <div class="custom-modal" id="bookingModal">
+            
+            <div class="custom-modal-body">
+                <button class="close-btn" onclick="closeBookingModal()">&times;</button>
+                <div class="custom-modal-header">
+                    <h2>Book an Appointment</h2>
+                    
+                </div>
+                <form method="POST" action="{% url 'book_appointment' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" id="doctorId" name="doctor">
+                
+                    <label for="patient_name">Patient Name</label>
+                    <input type="text" class="custom-input" name="patient_name" value="{{ patient.name }}" required>
+                    
+                    <label for="patient_name">Patient Age</label>
+                    <input type="text" class="custom-input" name="patient_age" value="{{ patient.age|default:''  }}" required>
+                    
+                    <label for="gender">Patient Gender</label>
+                    <div>
+                    <div style="display: inline-flex;">
+                          <label><input type="radio" name="patient_gender" value="Male" {% if patient.gender == "Male" %}checked{% endif %}   required> Male</label>
+                         <label><input type="radio" name="patient_gender" value="Female" {% if patient.gender == "Female" %}checked{% endif %}> Female</label>
+                          <label><input type="radio" name="patient_gender" value="Other" {% if patient.gender == "Other" %}checked{% endif %}> Other</label>
+                    </div>
+                    </div>
+
+
+                    
+                    <label for="patient_name">Patient Email</label>
+                    <input type="text" class="custom-input" name="patient_email" value="{{ patient.email }}" required >
+
+
+                    <label for="patient_name">Patient Number</label>
+                    <input type="text" class="custom-input" name="patient_number" value="{{ patient.phone_number|default:'' }}" required>
+                    
+                
+                
+                    <label for="disease">Predicted Disease</label>
+                    <input type="text" class="custom-input" name="disease" value="{{ request.session.predicted_class }}" required>
+                
+                    <label for="confidence">Confidence Level</label>
+                    <input type="text" class="custom-input" name="confidence" value="{{ request.session.confidence }}" >
+                
+                    <label for="severity">Severity</label>
+                    <input type="text" class="custom-input" name="severity" value="{{ request.session.severity }}" >
+                
+                    <label for="symptoms">Symptoms</label>
+                    <textarea class="custom-textarea" name="symptoms" required >{{ request.session.symptoms }}</textarea>
+                
+                    {% if request.session.uploaded_image %}
+                        <label>Uploaded Image</label><br>
+                        <img src="data:image/jpeg;base64,{{ request.session.uploaded_image }}" alt="Uploaded Image" class="preview-img" required>
+                    {% else %}
+                        <label for="image">Upload Image</label>
+                        <input type="file" class="custom-input" name="image" required>
+                    {% endif %}<br>
+                
+                    <label for="date">Select Date</label>
+                    <input type="date" class="custom-input" name="date" id="appointmentDate" required>
+                
+                    <label for="message">Additional Message</label>
+                    <textarea class="custom-textarea" name="message" placeholder="Enter additional information"></textarea>
+                
+                    <button type="submit" class="custom-btn primary-btn">Confirm Booking</button>
+                    <button type="button" class="custom-btn secondary-btn" onclick="closeBookingModal()">Cancel</button>
+                </form>
+                  </div>
+                  </div>                
+    </div>
+        
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let today = new Date();
+            
+            // Adjust to IST (Indian Standard Time)
+            today.setUTCHours(today.getUTCHours() + 5);
+            today.setUTCMinutes(today.getUTCMinutes() + 30);
+    
+            let minDate = today.toISOString().split('T')[0]; // Get YYYY-MM-DD format
+            document.getElementById("appointmentDate").min = minDate;
+            
+            document.querySelector("#bookingModal form").addEventListener("submit", function(event) {
+                let patientName = document.querySelector("[name='patient_name']").value.trim();
+                let email = document.querySelector("[name='email']").value.trim();
+                let date = document.querySelector("[name='date']").value.trim();
+                let disease = document.querySelector("[name='disease']").value.trim();
+                let uploadedImage = document.querySelector("[name='image']");
+    
+                // Check if required fields are empty
+                if (!patientName || !email || !date || !disease) {
+                    event.preventDefault(); // Prevent submission
+                    alert("Please fill out all required fields before booking.");
+                    return;
+                }
+    
+                // Check if an image is required (only if no image is already uploaded)
+                let existingImage = document.querySelector(".preview-img");
+                if (!existingImage && (!uploadedImage || uploadedImage.files.length === 0)) {
+                    event.preventDefault();
+                    alert("Please upload an image related to your skin condition.");
+                    return;
+                }
+            });
+    
+            
+        });
+        function openBookingModal(doctorId) {
+            document.getElementById("doctorId").value = doctorId;
+            document.getElementById("modalOverlay").style.display = "flex";
+            document.getElementById("bookingModal").style.display = "flex";
+            document.body.classList.add("modal-open");
+        }
+
+        function closeBookingModal() {
+            document.getElementById("modalOverlay").style.display = "none";
+            document.getElementById("bookingModal").style.display = "none";
+            document.body.classList.remove("modal-open");
+        }
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+    function(position) {
+        document.getElementById("latitude").value = position.coords.latitude;
+        document.getElementById("longitude").value = position.coords.longitude;
+        document.getElementById("filter-form").submit();
+    },
+    function(error) {
+        console.error("Error getting location:", error);
+    },
+    {
+        enableHighAccuracy: true, // Force GPS
+        timeout: 10000, // Wait 10 seconds before failing
+        maximumAge: 0  // Do not use cached location
+    }
+);
+
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+
+    </script>
+</body>
+</html>
+{% endblock %}
