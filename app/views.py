@@ -3,12 +3,10 @@ from django.contrib.auth.models import auth,User
 from review.models import reviews
 from datetime import datetime
 
-def patient(request):  
+def patient(request):   
     r =reviews.objects.all()
     return render(request,'home-page/index.html',{'reviews':r})
 
-def doctor(request):
-    return render(request,'doctor/dashboard.html')
 def index(request):
     if request.user.is_authenticated:
         if hasattr(request.user, 'doctor_profile'):  # Check if user is a doctor
@@ -39,10 +37,15 @@ def profile(request):
         
         profile.gender = request.POST.get('gender', profile.gender)
 
-        if 'profile_picture' in request.FILES:
-            profile.profile_picture = request.FILES['profile_picture']
-
+        
         profile.save()
         
 
+    return render(request, 'patient/profile.html', {'patient': profile})
+def update_profile(request):
+    profile, created = PatientProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == "POST" and 'profile_picture' in request.FILES:
+        profile.profile_picture = request.FILES['profile_picture']
+        profile.save()
     return render(request, 'patient/profile.html', {'patient': profile})

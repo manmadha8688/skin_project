@@ -14,7 +14,7 @@ def booking(request):
 
         # Filter by Experience
     if experience:
-          doctors = doctors.filter(experience__gte=int(experience))
+        doctors = doctors.filter(experience__gte=int(experience))
 
         # Filter by Language
     if language:
@@ -34,9 +34,13 @@ def booking(request):
             print(distance)
             if distance <= 50:  # Doctors within 50km
                 filtered_doctors.append(doctor)
-            
+        
         doctors = filtered_doctors
-
+    doctor = [
+        {'name': f'Doctor {i}', 'qualification': 'MBBS, MD', 'specialization': 'Dermatology', 'experience': 10 + i, 'speaks': 'English, Hindi', 'availability': 'Mon-Fri, 9 AM - 5 PM', 'address': f'Clinic {i} St.', 'contact_number': f'123-456-78{i}0', 'email': f'doctor{i}@example.com', 'profile_image': 'doctor-demo.jpeg'}
+        for i in range(1, 11)
+        ]
+    doctors = list(doctors) + doctor
     
     return render(request,'appointment/booking-appointment.html',{'doctors':doctors,"total":total})
 
@@ -118,7 +122,6 @@ def patient_appointments(request):
 def update_appointment_status(request, appointment_id):
     if request.method == "POST":
         new_status = request.POST.get("status") 
-        print(new_status+"status")
         
         if new_status not in ["Approved", "Rejected","Cancelled"]:
             return redirect("my-appointments")  # Redirect back if invalid

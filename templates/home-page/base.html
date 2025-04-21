@@ -370,7 +370,11 @@ p {
                     {% if user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center" href="#" id="profileDropdown">
-                            <img src="{% static 'images/about.jpg' %}" alt="Profile" class="rounded-circle" width="40" height="40">
+                            {% if patient.profile_picture %}
+                             <img src="{{ patient.profile_picture.url }}" alt="Profile" class="rounded-circle" width="40" height="40">
+                            {% else %}
+                           <img src="{% static 'images/profile_default.png' %}"  alt="Profile" class="rounded-circle" width="40" height="40">
+                            {% endif %}
                         </a>
                     
                         <!-- Custom Dropdown -->

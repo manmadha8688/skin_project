@@ -1,13 +1,23 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .models import DoctorProfile
 from appointments.models import Appointment
 from django.contrib import messages
+from django.utils import timezone
+from datetime import timedelta
 # Create your views here.
 def dashboard(request):
-    doctor = DoctorProfile.objects.get(user=request.user)
-    appointment = Appointment.objects.filter(doctor=doctor)
-    
-    return render(request,'doctor/dashboard.html', {'appointments':appointment})
+    appointment = None
+    try:
+        doctor = request.user.doctor_profile
+        today = timezone.now().date()
+        appointment = Appointment.objects.filter(doctor=doctor, date=today , status="Approved")
+        today_count = appointment.count()
+
+        tomorrow = timezone.now().date() + timedelta(days=1)
+        tomorrow_count = Appointment.objects.filter(doctor=doctor,status="Approved", date=tomorrow).count()
+    except :
+        pass
+    return render(request,'doctor/dashboard.html', {'appointments':appointment,'count':today_count,'t_count':tomorrow_count})
 
 
 def myprofile(request):
@@ -95,7 +105,6 @@ def appointment_request(request):
 def update_appointment_status(request, appointment_id):
     if request.method == "POST":
         new_status = request.POST.get("status") 
-        print(new_status+"status")
         
         if new_status not in ["Approved", "Rejected","Cancelled"]:
             return redirect("appointment-request")  # Redirect back if invalid

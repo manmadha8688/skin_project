@@ -49,7 +49,7 @@
                     <td>{{ appointment.confidence }}%</td>
                     <td>{{ appointment.addittional_information }}</td>
                     <td>{{ appointment.doctor.address }} <br><br>
-                        {% if appointment.status in "Pending,Approved" %}
+                        {% if appointment.status == "Approved" %}
                         <button class="direction-button" onclick="openGoogleMaps({{appointment.doctor.latitude}},{{appointment.doctor.longitude}})">Get Directions</button>
                         {% endif%}
 

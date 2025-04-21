@@ -79,94 +79,108 @@
     </style>
 </head>
 <body>
-
-<div class="profile-container">
-    <form method="POST" enctype="multipart/form-data">
+    <div class="profile-container">
+        <!-- Inside your profile-container .profile-header -->
+<div class="profile-header">
+    <form id="picForm" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-
-        <div class="profile-header">
-            {% if patient.profile_picture %}
-    <img src="{{ patient.profile_picture.url }}" alt="Profile Picture" class="profile-pic" id="profileImagePreview">
-{% else %}
-    <img src="{% static 'images/about.jpg' %}" alt="Default Profile Picture" class="profile-pic" id="profileImagePreview">
-{% endif %}
-            <input type="file" name="profile_picture"  class="profile-pic"  id="profile_picture_input" accept="image/*" style="display: none;"><br>
-            <button type="button" onsubmit="window.location.href='{% url 'profile' %}'" class="save-btn" id="changeBtn" onclick="triggerImageUpload()">Change Profile</button>
-        </div>
-        
-        
-
-        <!-- Read-only fields -->
-        <label for="name">Name</label>
-        <input type="text" id="name" value="{{ patient.name }}" readonly>
-
-        <label for="email">Email</label>
-        <input type="email" id="email" value="{{ patient.email }}" readonly>
-
-        <!-- Editable fields -->
-        <label for="phone_number">Phone Number</label>
-        <input type="text" name="phone_number" id="phone_number" value="{{ patient.phone_number }}">
-
-        <label for="date_of_birth">Date of Birth</label>
-        <input type="date" name="date_of_birth" id="date_of_birth" 
-        {% if patient.date_of_birth %}
-        value="{{ patient.date_of_birth|date:'Y-m-d' }}"
-        {% endif %}>
-
-        <label for="age">Age</label>
-        <input type="text" name="age" id="age" readonly value="{{ patient.age|default:'' }}">
-
-        <label for="gender">Gender</label>
-        <select name="gender" id="gender">
-            <option value="">-- Select --</option>
-            <option value="Male" {% if patient.gender == "Male" %}selected{% endif %}>Male</option>
-            <option value="Female" {% if patient.gender == "Female" %}selected{% endif %}>Female</option>
-            <option value="Other" {% if patient.gender == "Other" %}selected{% endif %}>Other</option>
-        </select>
-
-        <button type="submit" class="save-btn">Save Profile</button>
+        {% if patient.profile_picture %}
+            <img src="{{ patient.profile_picture.url }}" alt="Profile Picture" class="profile-pic" id="profileImagePreview">
+        {% else %}
+            <img src="{% static 'images/profile_default.png' %}" alt="Default Profile Picture" class="profile-pic" id="profileImagePreview">
+        {% endif %}
+        <input type="file" name="profile_picture" class="profile-pic" id="profile_picture_input" accept="image/*" style="display: none;"><br>
+        <button type="button" class="save-btn" id="changeBtn" onclick="handleProfileButtonClick()">Change Profile</button>
     </form>
+    
 </div>
 
-<script>
-    const changeBtn = document.getElementById('changeBtn');
-    const profileInput = document.getElementById('profile_picture_input');
-    const profilePreview = document.getElementById('profileImagePreview');
-
-    function triggerImageUpload() {
-        profileInput.click();
-    }
-
-    profileInput.addEventListener('change', function (event) {
-        // Change button to "Save Profile"
-        changeBtn.textContent = "Save Profile";
-        changeBtn.type = "submit";
-
-        // Show preview
-        if (event.target.files && event.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                profilePreview.src = e.target.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-    });
-    document.getElementById("date_of_birth").addEventListener("change", function () {
-        const dob = new Date(this.value);
+    
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+    
+            <!-- Read-only fields -->
+            <label for="name">Name</label>
+            <input type="text" id="name" value="{{ patient.name }}" readonly>
+    
+            <label for="email">Email</label>
+            <input type="email" id="email" value="{{ patient.email }}" readonly >
+    
+            <!-- Editable fields -->
+            <label for="phone_number">Phone Number</label>
+            <input type="text" name="phone_number" id="phone_number" value="{{ patient.phone_number|default:'' }}">
+    
+            <label for="date_of_birth">Date of Birth</label>
+            <input type="date" name="date_of_birth" id="date_of_birth" 
+            {% if patient.date_of_birth %}
+            value="{{ patient.date_of_birth|date:'Y-m-d' }}"
+            {% endif %}>
+    
+            <label for="age">Age</label>
+            <input type="text" name="age" id="age" readonly value="{{ patient.age|default:'' }}">
+    
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender">
+                <option value="">-- Select --</option>
+                <option value="Male" {% if patient.gender == "Male" %}selected{% endif %}>Male</option>
+                <option value="Female" {% if patient.gender == "Female" %}selected{% endif %}>Female</option>
+                <option value="Other" {% if patient.gender == "Other" %}selected{% endif %}>Other</option>
+            </select>
+    
+            <button type="submit" class="save-btn">Save Profile</button>
+        </form>
+    </div>
+    
+    <script>
         const today = new Date();
+  
+  // Subtract 1 day to disallow today
+  today.setDate(today.getDate() - 1);
 
-        if (!isNaN(dob.getTime())) {
-            let age = today.getFullYear() - dob.getFullYear();
-            const m = today.getMonth() - dob.getMonth();
-            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-                age--;
+  // Format the date to yyyy-mm-dd
+  const maxDate = today.toISOString().split('T')[0];
+
+  // Set it as the max attribute of the input
+  document.getElementById('date_of_birth').setAttribute('max', maxDate);
+
+        const changeBtn = document.getElementById('changeBtn');
+        const profileInput = document.getElementById('profile_picture_input');
+        const profilePreview = document.getElementById('profileImagePreview');
+        const picForm = document.getElementById('picForm');
+    
+        let fileSelected = false;
+    
+        function handleProfileButtonClick() {
+            if (!fileSelected) {
+                // First click → open file selector
+                profileInput.click();
+            } else {
+                // After file selected → submit form
+                localStorage.setItem("submitted_profile_pic", "true");
+                picForm.submit();
             }
-            document.getElementById("age").value = age;
-        } else {
-            document.getElementById("age").value = "";
         }
-    });
-</script>
+    
+        profileInput.addEventListener('change', function (event) {
+            if (event.target.files && event.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    profilePreview.src = e.target.result;
+                };
+                reader.readAsDataURL(event.target.files[0]);
+    
+                // Change button to submit state
+                changeBtn.textContent = "Save Profile";
+                fileSelected = true;
+            }
+        });
+    
+        window.addEventListener('load', function () {
+            // Clear any previous state so it doesn't trigger again
+            localStorage.removeItem("submitted_profile_pic");
+        });
+    </script>
+    
 
 
 </body>

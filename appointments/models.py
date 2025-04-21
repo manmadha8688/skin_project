@@ -3,7 +3,6 @@ from doctor.models import DoctorProfile
 from django.conf import settings
 from django.db import models
 from app.models import PatientProfile
-from django.contrib.auth.models import User
 
 class Appointment(models.Model):
     STATUS_CHOICES = [

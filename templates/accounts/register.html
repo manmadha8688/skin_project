@@ -92,6 +92,25 @@
         .login-btn:hover {
             background: #218838;
         }
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .password-wrapper input {
+            width: 100%;
+            padding-right: 40px; /* space for eye icon */
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 18px;
+            color: #555;
+        }
         
     </style>
 </head>
@@ -109,7 +128,11 @@
             <input type="text" name="username" placeholder="Username" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="text" name="name" placeholder="Your full name" required>
-            <input type="password" name="password1" placeholder="Password" required>
+            <div class="password-wrapper">
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword()">👁️</span>
+              </div>
+              
             <input type="password" name="password2" placeholder="Confirm Password" required>
             <button type="submit">Sign Up</button>
         </form>
@@ -117,7 +140,24 @@
             <a href="{% url 'login' %}" class="login-btn">
             🔑 Login
         </a>
+        <p> <span style="color: red;">Note  </span> : If you are a dermatologist, please contact us to register and start receiving appointments through our website.</p>
+
         
     </div>
 </body>
+<script>
+    function togglePassword() {
+      const passwordInput = document.getElementById("password");
+      const icon = document.querySelector(".toggle-password");
+  
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        icon.textContent = "🙈";
+      } else {
+        passwordInput.type = "password";
+        icon.textContent = "👁️";
+      }
+    }
+  </script>
+  
 </html>

@@ -148,7 +148,7 @@
 </head>
 
 <body style="background-image: url( {% static 'images/upload_background.jpg' %}); background-size: cover;">
-
+    
     <div class="upload-container">
         <h2>🩺 Upload Image for Skin Disease Detection</h2>
         <br><br>
@@ -163,6 +163,8 @@
              <br><br>{{error}}
             <br><br>
             <button onclick="showLoader()" class="upload-btn" type="submit">Analyze Image</button>
+            <p style="color: #fff; margin-top: 10px; font-size: 14px;">⚠️ <span style="color: red;">Note : </span> Please upload only skin images for accurate detection.</p>
+
         </form>
         <div id="loader" class="loader-overlay" style="display: none;">
             <div class="loader"></div>

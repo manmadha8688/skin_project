@@ -1,8 +1,16 @@
 {% extends 'home-page/base.html'%}
 {%load static %}
 {% block content %}
+
+<div id="custom-alert" class="custom-alert">
+    <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    <span id="custom-alert-message">You have successfully logged out.</span>
+  </div>
+  
+
 <div class="home" style="height: 500px;">
 
+    
     <!-- Home Slider -->
     <div class="home_slider_container">
     <div class="owl-carousel owl-theme home_slider">
@@ -22,7 +30,7 @@
                                     <h4 >Check your skin through online and get  results within seconds.</h4>
                                 
                                 </div>
-                                <div style="margin-top:70px;">
+                                 <div style="margin-top:70px;">
                                    <button class="action_button" style="width:250px; margin-left: -20px;"  onclick="window.location.href='{% url 'desease_detecttion:desease_home'%}'" >
                                     <h4 style="color: white;">Check your skin Now</h4>
                                     </button>
@@ -149,19 +157,17 @@ Don't wait for hours—schedule your consultation and get the care you need.</p>
 </center>
 <div class="why-us">
 <div class="why-item">
-    <img src="stethoscope-icon.png" alt="Happy Patients">
     <h3>500,000+</h3>
     <p>Happy Patients</p>
 </div>
 
 <div class="why-item">
-    <img src="experience-icon.png" alt="Experience">
     <h3>25+ Years</h3>
     <p>of Experience</p>
 </div>
 
 <div class="why-item">
-    <img src="expert-icon.png" alt="Expert Doctors">
+
     <h3>Top Experts</h3>
     <p>Specialized Dermatologists</p>
 </div>
@@ -208,5 +214,72 @@ Don't wait for hours—schedule your consultation and get the care you need.</p>
 {% include 'home-page/how to use.html'%}
 
 <br><br> 
-
+<style>
+    .custom-alert {
+      display: none;
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #d4edda;
+      color: #155724;
+      padding: 20px 30px;
+      border: 1px solid #c3e6cb;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      font-size: 18px;
+      opacity: 0;
+      animation: fadeIn 0.6s forwards;
+    }
+  
+    .custom-alert .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #155724;
+      cursor: pointer;
+    }
+  
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+  
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  </style>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const alertBox = document.getElementById('custom-alert');
+    const messageSpan = document.getElementById('custom-alert-message');
+  
+    if (alertBox) {
+      if (urlParams.get('logged_out') === 'true') {
+        messageSpan.innerText = 'You have successfully logged out.';
+        showAlert();
+      } else if (urlParams.get('logged_in') === 'true') {
+        messageSpan.innerText = 'You have successfully logged in.';
+        showAlert();
+      }
+    }
+  
+    function showAlert() {
+      alertBox.style.display = 'block';
+  
+      setTimeout(() => {
+        alertBox.style.animation = 'fadeOut 0.5s forwards';
+        setTimeout(() => {
+          alertBox.style.display = 'none';
+        }, 500);
+      }, 4000);
+    }
+  </script>
+    
+      
 {% endblock %}

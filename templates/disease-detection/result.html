@@ -170,11 +170,14 @@
         <div class="side-by-side">
             <a href="{% url 'desease_detecttion:desease_home' %}" class="btn back-btn">🔄 Upload Another Image</a>
             <a href="{% url 'desease_detecttion:download-report' %}" class="btn download-btn">📄 Download Report</a>
+            
+            <a href="/" class="btn back-btn"> Home </a>
         </div>
-
+        {% if not doctor%}
         <div class="button-container">
             <a href="{% url 'appointments'%}" target="_blank" class="btn appointment-btn">📅 Book an Appointment</a>
         </div>
+        {%endif%}
     </div>
 
 </body>

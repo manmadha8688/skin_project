@@ -1,95 +1,58 @@
 {% extends 'doctor/base.html' %}
 {% load static %}
 {% block content %}
+<div id="custom-alert" class="custom-alert">
+    <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+    <span id="custom-alert-message">Welcome back, {{doctor.name}}</span>
+  </div>
+  
 <div class="main-content">
     <div class="header">
         <h2>Dashboard</h2>
-        <input type="text" placeholder="Search...">
+        
     </div>
     <div class="stats">
         <div class="stat-box">
             <img src="{% static 'images/total-patients.png' %}" class="images-top" alt="image" >
-            <p>Total Patients</p><p class="total"> 2000+</p> <br><p> Till today</p>
+            <p>Total Patients</p><p class="total"> 100</p> <br><p> Till today</p>
         </div>
         <div class="stat-box">
             <img src="{% static 'images/today-patients.png' %}" class="images-top" alt="image" >
            
-            <p>Today's Patients</p> <br><p class="total"> 68</p>
+            <p>Today's Patients</p> <br><p class="total"> {{count}}</p>
         </div>
         <div class="stat-box">
             <img src="{% static 'images/tomorrow-appointments.png' %}" class="images-top"  alt="image" >
            
-            <p>Tomorrow Appointments</p><br><p class="total">85</p>
+            <p>Tomorrow Appointments</p><br><p class="total">{{t_count}}</p>
         </div>
     </div>
     <div class="content-sections">
     
         <div class="appointments">
+            
             <h2>Today's Appointments</h2>
+            {% if appointments%}
             <div class="table-container">
                 <table class="table">
                     <tr>
-                        <th >Patient</th>
-                        <th>Name</th>
+                        <th >Name</th>
+                        <th>Age</th>
+                        <th>Disease</th>
                     </tr>
+                    {%for i in appointments%}
                     <tr>
-                        <td><img alt="profile"></td>
-                        <td style="color: navy;">John Doe</td>
-                        <td>12:20</td>
+                        <td style="color: navy;">{{i.patient_name}}</td>
+                        <td>{{i.patient_age}}</td>
+                        <td>{{i.disease}}</td>
                     </tr>
-                    <tr>
-                        <td><img alt="profile"></td>
-                        <td>John Doe</td>
-                    </tr>
+                    {% endfor %}
                     
                 </table>
             </div>
-        </div>
-        <div class="appointments">
-            <h2>Next Patient</h2><br>
-            <img src="C:/manmadha/django/projects1/mainproject/static/images/patient-profile.png" 
-                 class="images-top" alt="Patient Image">
-            <p><strong>Name:</strong> Alice Williams</p>
-            <p><strong>Age:</strong> 32</p>
-            <p><strong>Condition:</strong> Skin Allergy</p>
-            <p><strong>Appointment Time:</strong> 14:30</p>
-        </div>
-        <div class="appointments">
-        <div class="calendar">
-            <div class="calendar-header">
-                <span class="month">March - 2025</span>
-            </div>
-            <table class="calendar-table">
-                <thead>
-                    <tr>
-                        <th>Sa</th>
-                        <th>Su</th>
-                        <th>Mo</th>
-                        <th>Tu</th>
-                        <th>We</th>
-                        <th>Th</th>
-                        <th>Fr</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td></td><td></td><td></td><td></td><td>1</td><td>2</td><td>3</td>
-                    </tr>
-                    <tr>
-                        <td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td>
-                    </tr>
-                    <tr>
-                        <td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td>
-                    </tr>
-                    <tr>
-                        <td>18</td><td>19</td><td>20</td><td class="today">21</td><td>22</td><td>23</td><td>24</td>
-                    </tr>
-                    <tr>
-                        <td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            {% else %}
+            <p style="margin-top: 50px;">No Appointments</p>
+            {% endif %}
         </div>
         
         
@@ -225,8 +188,71 @@
         font-weight: bold;
         color: blue;
     }
+
+    
+    .custom-alert {
+      display: none;
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #d4edda;
+      color: #155724;
+      padding: 20px 30px;
+      border: 1px solid #c3e6cb;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      font-size: 18px;
+      opacity: 0;
+      animation: fadeIn 0.6s forwards;
+    }
+  
+    .custom-alert .close-btn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #155724;
+      cursor: pointer;
+    }
+  
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+  
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  
     
     
 </style>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const alertBox = document.getElementById('custom-alert');
+    const messageSpan = document.getElementById('custom-alert-message');
+  
+    if (alertBox) {
+      if (urlParams.get('logged_in') === 'true') {
+        showAlert();
+      }
+    }
+  
+    function showAlert() {
+      alertBox.style.display = 'block';
+  
+      setTimeout(() => {
+        alertBox.style.animation = 'fadeOut 0.5s forwards';
+        setTimeout(() => {
+          alertBox.style.display = 'none';
+        }, 500);
+      }, 4000);
+    }
+  </script>
 
 {% endblock %}

@@ -30,7 +30,7 @@ def register(request):
                 user.save()
                 profile = PatientProfile.objects.create(user=user,name=name,email=email)
                 profile.save()
-                return redirect('login')
+                return redirect('/accounts/login?registered=true')
         else:
             messages.info(request,'password not matching..')
             return redirect('register')
@@ -50,9 +50,9 @@ def login_view(request):
             login(request, user)
             
             if user.role=="doctor":
-                return redirect('doctor')
+                return redirect('/doctor/?logged_in=true')
 
-            return redirect('patient')
+            return redirect('/patient?logged_in=true')
         else:
             messages.error(request,'Invalid credentials!!!')
         
@@ -60,5 +60,5 @@ def login_view(request):
     
 def logout_view(request):
     logout(request)
-    return redirect('patient')
+    return redirect('/patient?logged_out=true')
 
