@@ -16,6 +16,8 @@ model = load_model("skin_cnn.h5")
 
 import cv2
 
+from django.contrib.auth.decorators import login_required
+
 disease_info = {
     
     "Melanocytic Nevi": {
@@ -101,6 +103,8 @@ def preprocess_uploaded_image(uploaded_file):
 # Create your views here.
 def home(request):
     return render(request,'disease-detection/upload.html')
+
+@login_required
 def result(request):
     if request.method == "POST":
         try:

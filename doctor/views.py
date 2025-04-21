@@ -7,6 +7,8 @@ from datetime import timedelta
 # Create your views here.
 def dashboard(request):
     appointment = None
+    today_count = 0
+    tomorrow_count = 0
     try:
         doctor = request.user.doctor_profile
         today = timezone.now().date()

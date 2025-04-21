@@ -1,8 +1,15 @@
-from django.shortcuts import render
+
 from doctor.models import DoctorProfile
 from app.models import PatientProfile
 from geopy.distance import geodesic 
-# Create your views here.
+
+from django.shortcuts import render, redirect
+from .models import Appointment
+import base64
+from django.core.files.base import ContentFile
+
+from django.contrib.auth.decorators import login_required
+
 def booking(request):
     experience = request.POST.get('experience', '')
     language = request.POST.get("language", "")
@@ -45,14 +52,7 @@ def booking(request):
     return render(request,'appointment/booking-appointment.html',{'doctors':doctors,"total":total})
 
 
-
-from django.shortcuts import render, redirect,get_list_or_404
-from django.contrib import messages
-from .models import Appointment
-import base64
-from io import BytesIO
-from PIL import Image
-from django.core.files.base import ContentFile
+@login_required
 def book_appointment(request):
 
     
@@ -114,8 +114,8 @@ def book_appointment(request):
     return redirect('my-appointments')
 
 def patient_appointments(request):
-    patient = PatientProfile.objects.get(user=request.user)
-    appointments = Appointment.objects.filter(patient=patient)
+    
+    appointments = Appointment.objects.filter(patient=request.user.patient_profile)
    
     return render(request,'appointment/my-appointments.html',{'appointments':appointments})
 

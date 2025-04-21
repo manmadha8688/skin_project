@@ -3,7 +3,7 @@ from django.conf import settings
 from django.db import models
 
 class PatientProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='patient_profile')
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone_number = models.CharField(max_length=15, blank=True,null=True)

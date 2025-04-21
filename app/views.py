@@ -13,7 +13,8 @@ def index(request):
             return redirect('doctor')
     
         return redirect('patient')  # Redirect normal users
-    return render(request, "home-page/index.html")
+    r =reviews.objects.all()
+    return render(request,'home-page/index.html',{'reviews':r})
 from .models import PatientProfile
 
 def profile(request):
