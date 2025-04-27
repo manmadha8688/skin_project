@@ -131,36 +131,43 @@
         </form>
     </div>
     
-    <script>
-        const today = new Date();
+    
+<script>
+    const today = new Date();
   
-  // Subtract 1 day to disallow today
-  today.setDate(today.getDate() - 1);
+    // Subtract 1 day to disallow today
+    today.setDate(today.getDate() - 1);
 
-  // Format the date to yyyy-mm-dd
-  const maxDate = today.toISOString().split('T')[0];
+    // Format the date to yyyy-mm-dd
+    const maxDate = today.toISOString().split('T')[0];
 
-  // Set it as the max attribute of the input
-  document.getElementById('date_of_birth').setAttribute('max', maxDate);
+    // Set it as the max attribute of the input
+    document.getElementById('date_of_birth').setAttribute('max', maxDate);
 
-        const changeBtn = document.getElementById('changeBtn');
-        const profileInput = document.getElementById('profile_picture_input');
-        const profilePreview = document.getElementById('profileImagePreview');
-        const picForm = document.getElementById('picForm');
-    
-        let fileSelected = false;
-    
-        function handleProfileButtonClick() {
-            if (!fileSelected) {
-                // First click → open file selector
-                profileInput.click();
-            } else {
-                // After file selected → submit form
-                localStorage.setItem("submitted_profile_pic", "true");
-                picForm.submit();
-            }
+    // Function to calculate age
+    function calculateAge(dob) {
+        const birthDate = new Date(dob);
+        const ageDifMs = today - birthDate;
+        const ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() - 1970); // Getting the age in years
+    }
+
+    // Event listener for date of birth input change
+    document.getElementById('date_of_birth').addEventListener('input', function() {
+        const dob = this.value;
+        if (dob) {
+            const age = calculateAge(dob);
+            document.getElementById('age').value = age; // Set age field
         }
-    
+    });
+
+    // Initialize age if date_of_birth already exists
+    if (document.getElementById('date_of_birth').value) {
+        const dob = document.getElementById('date_of_birth').value;
+        const age = calculateAge(dob);
+        document.getElementById('age').value = age;
+    }
+
         profileInput.addEventListener('change', function (event) {
             if (event.target.files && event.target.files[0]) {
                 const reader = new FileReader();
