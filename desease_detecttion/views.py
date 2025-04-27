@@ -70,35 +70,29 @@ disease_info = {
     }
 }
 
-CLASS_NAMES= {
-    0: 'Actinic Keratosis',
-    1: 'Basal Cell Carcinoma',
-    2: 'Seborrheic Keratosis',
-    3: 'Dermatofibroma',
-    4: 'Melanoma',
-    5: 'Melanocytic Nevi',
-    6: 'Squamous Cell Carcinoma',
-    7: 'Vascular Lesions'
+
+class_labels = {
+    'AK': 'Actinic Keratosis',
+    'BCC': 'Basal Cell Carcinoma',
+    'BKL': 'Benign Keratosis-like Lesions',
+    'DF': 'Dermatofibroma',
+    'MEL': 'Melanoma',
+    'NV': 'Melanocytic Nevi',
+    'SCC': 'Squamous Cell Carcinoma',
+    'VASC': 'Vascular Lesions'
 }
 
-def preprocess_uploaded_image(uploaded_file):
-    # Read image bytes from the uploaded file
-    file_bytes = uploaded_file.read()
-    np_array = np.frombuffer(file_bytes, np.uint8)
-    
-    # Decode the numpy array as an image
-    img = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
-    
-    if img is None:
-        print("Error: Could not decode image")
+
+def preprocess_image(img_file):
+    try:
+        image = Image.open(img_file)
+        image = image.convert('RGB')  # Ensure 3 channels
+        image = image.resize((28, 28))
+        img_array = np.array(image).astype('float32')
+        img_array = img_array.reshape(-1, 28, 28, 3)
+        return img_array
+    except:
         return None
-
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, (28,28))
-    img = img.astype('float32') / 255.0  # Normalized
-    img = img.reshape(-1, 28, 28, 3)
-
-    return img
 
 # Create your views here.
 def home(request):
@@ -125,7 +119,7 @@ def result(request):
             # ✅ Open and process the image
             try:
                 
-                img = preprocess_uploaded_image(uploaded_image)  # Resize
+                img = preprocess_image(uploaded_image)  # Resize
                 
             except UnidentifiedImageError:
                 return render(request, 'disease-detection/upload.html', {
@@ -139,10 +133,11 @@ def result(request):
                 })
 
             prediction = model.predict(img)
-            predicted_index = np.argmax(prediction)  # Get index of highest probability
-            predicted_class = CLASS_NAMES[predicted_index]  # Get full name
-            confidence= np.max(prediction) * 100  # Get confidence score in percentage
-            
+            predicted_index = np.argmax(prediction)
+            predicted_short_label = list(class_labels.keys())[predicted_index]
+            predicted_class = class_labels[predicted_short_label]
+            confidence = np.max(prediction) * 100
+
             img = Image.open(uploaded_image)
             img = img.resize((100,75))  # Resize
             img_array = image.img_to_array(img)

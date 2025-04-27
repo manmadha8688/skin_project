@@ -43,6 +43,11 @@ def login_view(request):
 
         username = request.POST['email']
         password = request.POST['password']
+        try:
+            user_obj = User.objects.get(email=username)
+        except User.DoesNotExist:
+            messages.error(request, 'Email not registered!')
+            return render(request, 'accounts/login.html')
         
         user = authenticate(request, username=username, password=password)
         
@@ -54,7 +59,7 @@ def login_view(request):
 
             return redirect('/patient?logged_in=true')
         else:
-            messages.error(request,'Invalid credentials!!!')
+            messages.error(request,'Invalid Password!!!')
         
     return render(request,'accounts/login.html')
     
