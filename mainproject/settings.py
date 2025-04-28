@@ -100,8 +100,6 @@ DATABASES = {
     }
 }
 DATABASES['default'] = dj_database_url.parse(config('database_url'))
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -141,9 +139,8 @@ STATIC_ROOT = os.path.join(BASE_DIR,'assets')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'  # URL to access media files
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
