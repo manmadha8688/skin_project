@@ -29,4 +29,8 @@ urlpatterns = [
 from django.conf import settings
 from django.conf.urls.static import static
 
+<<<<<<< HEAD
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+=======
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+>>>>>>> caf459058f4b0e72f7393931792f58fa48b4c6c1
